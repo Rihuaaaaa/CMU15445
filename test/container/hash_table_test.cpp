@@ -35,7 +35,7 @@ TEST(HashTableTest, DISABLED_SampleTest) {
     ht.Insert(nullptr, i, i);
     std::vector<int> res;
     ht.GetValue(nullptr, i, &res);
-    EXPECT_EQ(1, res.size()) << "Failed to insert " << i << std::endl;
+    9(1, res.size()) << "Failed to insert " << i << std::endl;
     EXPECT_EQ(i, res[0]);
   }
 

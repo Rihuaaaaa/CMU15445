@@ -17,9 +17,10 @@
 #include "common/macros.h"
 namespace bustub {
 
-BufferPoolManagerInstance::BufferPoolManagerInstance(size_t pool_size, DiskManager *disk_manager,
-                                                     LogManager *log_manager)
-    : BufferPoolManagerInstance(pool_size, 1, 0, disk_manager, log_manager) {}
+BufferPoolManagerInstance::BufferPoolManagerInstance(size_t pool_size, DiskManager *disk_manager,LogManager *log_manager): 
+                                                    BufferPoolManagerInstance(pool_size, 1, 0, disk_manager, log_manager) {
+                                                      
+                                                    }
 
 BufferPoolManagerInstance::BufferPoolManagerInstance(size_t pool_size, uint32_t num_instances, uint32_t instance_index,
                                                      DiskManager *disk_manager, LogManager *log_manager)
@@ -65,10 +66,10 @@ bool BufferPoolManagerInstance::FlushPgImp(page_id_t page_id) {
     latch_.unlock();
     return false;
   }
-
+  
   frame_id = it->second;
-  pages_[frame_id].is_dirty_ = false;
-  disk_manager_->WritePage(page_id, pages_[frame_id].data_);
+  pages_[frame_id].is_dirty_ = false;  //进行了刷盘就不是 dirty了。 
+  disk_manager_->WritePage(page_id, pages_[frame_id].data_);    // WritePage 刷盘函数，显式的进行刷盘
 
   latch_.unlock();
   return true;
@@ -81,8 +82,9 @@ bool BufferPoolManagerInstance::FlushPgImp(page_id_t page_id) {
 */
 void BufferPoolManagerInstance::FlushAllPgsImp() {
   latch_.lock();
-  for(auto cur: page_table_)
+  for(auto cur: page_table_)    // unordered_map<page_id_t, frame_id_t> page_table_
   {
+
     pages_[cur.second].is_dirty_ = false;
     disk_manager_->WritePage(cur.first , pages_[cur.second].data_);
   }
@@ -91,7 +93,7 @@ void BufferPoolManagerInstance::FlushAllPgsImp() {
 
 
 //在磁盘中分配新的物理页面，将其添加至缓冲池，并返回指向缓冲池页面Page的指针。
-//不是通过磁盘刷进内存, 而是直接在内存中新建一页, 注意新页要第一时间写入到磁盘(尽管没什么内容), 以确保磁盘能感知到该页, 否则被LRU淘汰就完蛋了, 如果内存全是被pin的页就没办法了, 返回空指针
+//不是通过磁盘刷进内存, 而是直接在缓存池中新建一页, 注意新页要第一时间写入到磁盘(尽管没什么内容), 以确保磁盘能感知到该页, 否则被LRU淘汰就完蛋了, 但如果内存全是被pin的页就没办法了, 返回空指针
 Page* BufferPoolManagerInstance::NewPgImp(page_id_t *page_id){     
   //1 检查当前缓冲池中是否存在空闲槽位或存放页面可被驱逐的槽位（下文称其为目标槽位），在这里总是先通过检查free_list_以查询空闲槽位，
   //如无空闲槽位则尝试从replace_中驱逐页面并返回被驱逐页面的槽位。如目标槽位，则返回空指针；如存在目标槽位，则调用AllocatePage()为新的页面分配page_id页面ID。
@@ -113,6 +115,7 @@ Page* BufferPoolManagerInstance::NewPgImp(page_id_t *page_id){
     }
   }
   * page_id = AllocatePage();
+
   //2 这里需要检查目标槽位中的页面是否为脏页面，如是则需将其写回磁盘，并将其脏位设为false；
   if(pages_[new_frame_id].is_dirty_)
   {
@@ -147,7 +150,7 @@ Page* BufferPoolManagerInstance::FetchPgImp(page_id_t page_id){
   if( it!= page_table_.end())              
   {
     frame_id = it->second;      
-    Page *res = &pages_[frame_id];    //  pages_ 是缓冲池中的实际容器页面槽位数组，用于存放从磁盘中读入的页面，数据里存放的就是一个一个的pages
+    Page *res = &pages_[frame_id];    //  pages_ 是缓冲池中的实际容器页面槽位数组，用于存放从磁盘中读入的页面，数组里存放的就是一个一个的pages
     res->pin_count_++;
     replacer_->Pin(frame_id);     
 

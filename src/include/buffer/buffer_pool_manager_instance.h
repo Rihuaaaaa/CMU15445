@@ -210,6 +210,9 @@ class BufferPoolManagerInstance : public BufferPoolManager {
    */
   void ValidatePageId(page_id_t page_id) const;
 
+
+
+
   /** Number of pages in the buffer pool. */
   const size_t pool_size_;
   /** How many instances are in the parallel BPM (if present, otherwise just 1 BPI) */
@@ -221,7 +224,7 @@ class BufferPoolManagerInstance : public BufferPoolManager {
   std::atomic<page_id_t> next_page_id_ = instance_index_;
 
   /** Array of buffer pool pages. */
-  Page *pages_;   //缓冲池中的实际容器页面槽位数组，用于存放从磁盘中读入的页面，并供DBMS访问
+  Page *pages_;   //缓冲池中的实际容器页面，用于存放从磁盘中读入的页面，并供DBMS访问
 
   /** Pointer to the disk manager. */
   DiskManager *disk_manager_ __attribute__((__unused__));   // 磁盘管理器，提供从磁盘读入页面及写入页面的接口；

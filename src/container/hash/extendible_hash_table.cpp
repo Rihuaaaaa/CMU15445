@@ -29,7 +29,6 @@ template <typename KeyType, typename ValueType, typename KeyComparator>   //构造
 HASH_TABLE_TYPE::ExtendibleHashTable(const std::string &name, BufferPoolManager *buffer_pool_manager,const KeyComparator &comparator, HashFunction<KeyType> hash_fn)
 : buffer_pool_manager_(buffer_pool_manager), comparator_(comparator), hash_fn_(std::move(hash_fn)) {
 
-  //reinterpret_cast强制转换     int n =1 ; int *p = reinterpret_cast<int*>(n);       将int 强转为 int* 类型
   //new出一个目录页  此处是将 Page* 类型强制转换为 HashTableDirectoryPage* 类型
   HashTableDirectoryPage *dir_page = reinterpret_cast<HashTableDirectoryPage *>(buffer_pool_manager_->NewPage(&directory_page_id_));
   

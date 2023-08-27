@@ -26,7 +26,7 @@ void HashTableDirectoryPage::SetLSN(lsn_t lsn) { lsn_ = lsn; }
 
 uint32_t HashTableDirectoryPage::GetGlobalDepth() { return global_depth_; }
 
-uint32_t HashTableDirectoryPage::GetGlobalDepthMask() { return (1U << global_depth_) - 1; }
+uint32_t HashTableDirectoryPage::GetGlobalDepthMask() { return (1U << global_depth_) - 1; }   // 通过位运算返回用于计算全局深度低位的掩码
 
 uint32_t HashTableDirectoryPage::GetSplitImageIndex(uint32_t bucket_idx) {
   return bucket_idx ^ 1U << (global_depth_ - 1);
