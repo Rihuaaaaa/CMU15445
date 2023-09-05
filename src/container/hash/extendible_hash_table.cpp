@@ -142,6 +142,7 @@ bool HASH_TABLE_TYPE::Insert(Transaction *transaction, const KeyType &key, const
   {
     p->WUnlatch();
     table_latch_.RUnlock();
+    
     assert(buffer_pool_manager_->UnpinPage(directory_page_id_, true, nullptr));
     assert(buffer_pool_manager_->UnpinPage(bucket_page_id, true, nullptr));
     return SplitInsert(transaction , key , value);      //桶满了要调用

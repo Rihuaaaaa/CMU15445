@@ -198,7 +198,12 @@ class ExtendibleHashTable {
 
   // member variables
   page_id_t directory_page_id_;    // 在构造函数初始化， 用来获取目录页
+
+  
   BufferPoolManager *buffer_pool_manager_;    //bpm , 用来获取目录页和bucket页
+
+
+
   KeyComparator comparator_;        
 
   // Readers includes inserts and removes, writers are splits and merges
